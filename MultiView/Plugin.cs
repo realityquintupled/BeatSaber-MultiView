@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace MultiView
 {
@@ -32,9 +33,17 @@ namespace MultiView
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene arg1)
         {
-            if(Camera.main != null)
+            multi = null;
+            if (Camera.main != null)
             {
-                multi = UnityEngine.Object.Instantiate(Camera.main);
+                GameObject gameObj = Object.Instantiate(Camera.main.gameObject);
+                gameObj.name = "Multi Camera";
+                gameObj.tag = "Untagged";
+                while (gameObj.transform.childCount > 0) Object.DestroyImmediate(gameObj.transform.GetChild(0).gameObject);
+                Object.DestroyImmediate(gameObj.GetComponent("CameraRenderCallbacksManager"));
+                Object.DestroyImmediate(gameObj.GetComponent("AudioListener"));
+                Object.DestroyImmediate(gameObj.GetComponent("MeshCollider"));
+                multi = gameObj.GetComponent<Camera>();
                 multi.stereoTargetEye = StereoTargetEyeMask.None;
                 multi.depth = 1023;
                 multi.cullingMask &= ~(1 << 24);
@@ -67,12 +76,15 @@ namespace MultiView
 
         public void OnUpdate()
         {
-            if(Input.GetKeyDown(KeyCode.F4))
+            if (Input.GetKeyDown(KeyCode.F4))
             {
                 IsMulti = !IsMulti;
             }
-            multi.transform.position = Vector3.Lerp(multi.transform.position, Camera.main.transform.position, config.positionSmooth * Time.deltaTime);
-            multi.transform.rotation = Quaternion.Slerp(multi.transform.rotation, Camera.main.transform.rotation, config.rotationSmooth * Time.deltaTime);
+            if (multi != null)
+            {
+                multi.transform.position = Vector3.Lerp(multi.transform.position, Camera.main.transform.position, config.positionSmooth * Time.deltaTime);
+                multi.transform.rotation = Quaternion.Slerp(multi.transform.rotation, Camera.main.transform.rotation, config.rotationSmooth * Time.deltaTime);
+            }
         }
 
         public void OnFixedUpdate()
@@ -81,7 +93,8 @@ namespace MultiView
 
         protected virtual void SetFOV()
         {
-            if (multi == null) return;
+            if (multi == null)
+                return;
             var fov = (float)(57.2957801818848 * (2.0 * Mathf.Atan(Mathf.Tan((float)(config.fov * (Math.PI / 180.0) * 0.5)) / Camera.main.aspect)));
             multi.fieldOfView = fov;
         }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using UnityEngine;
 
 namespace MultiView
 {
@@ -71,10 +70,7 @@ namespace MultiView
 
             Load();
 
-            if (ConfigChangedEvent != null)
-            {
-                ConfigChangedEvent(this);
-            }
+            ConfigChangedEvent?.Invoke(this);
         }
     }
 }
