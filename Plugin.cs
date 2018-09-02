@@ -10,7 +10,7 @@ namespace MultiView
     public class Plugin : IPlugin
     {
         public string Name => "MultiView";
-        public string Version => "v1.2";
+        public string Version => "v1.3";
         private Config config = new Config(Path.Combine(Environment.CurrentDirectory, "MultiView.cfg"));
         private Camera multi = null;
         private bool isMulti;
@@ -46,6 +46,7 @@ namespace MultiView
                 multi.stereoTargetEye = StereoTargetEyeMask.None;
                 multi.depth = 1023;
                 multi.cullingMask &= ~(1 << 3);
+                multi.tag = "NotMainCamera";
                 ReadConfig();
                 Object.DontDestroyOnLoad(multi.gameObject);
             }
