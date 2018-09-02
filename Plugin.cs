@@ -33,7 +33,7 @@ namespace MultiView
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene arg1)
         {
-            if (Camera.main != null && multi == null)
+            if (arg1.buildIndex > 1 && Camera.main != null && multi == null)
             {
                 GameObject gameObj = Object.Instantiate(Camera.main.gameObject);
                 gameObj.name = "Multi Camera";
@@ -45,7 +45,7 @@ namespace MultiView
                 multi = gameObj.GetComponent<Camera>();
                 multi.stereoTargetEye = StereoTargetEyeMask.None;
                 multi.depth = 1023;
-                multi.cullingMask &= ~(1 << 24);
+                multi.cullingMask &= ~(1 << 3);
                 ReadConfig();
                 Object.DontDestroyOnLoad(multi.gameObject);
             }
