@@ -28,7 +28,7 @@ namespace MultiView
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             isMulti = false;
-            config.ConfigChangedEvent += (config) => { this.config = config; ReadConfig(); };
+            config.ConfigChangedEvent += OnConfigChanged;
         }
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene arg1)
@@ -63,6 +63,13 @@ namespace MultiView
         public void OnApplicationQuit()
         {
             SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
+            config.ConfigChangedEvent -= OnConfigChanged;
+        }
+
+        private void OnConfigChanged(Config config)
+        {
+            this.config = config;
+            ReadConfig();
         }
 
         public void OnLevelWasLoaded(int level)
