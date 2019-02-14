@@ -10,7 +10,7 @@ namespace MultiView
     public class Plugin : IPlugin
     {
         public string Name => "MultiView";
-        public string Version => "0.1.0";
+        public string Version => "1.4.1";
         private Config config = new Config(Path.Combine(Environment.CurrentDirectory, "MultiView.cfg"));
         private Camera multi;
         private bool isMulti;
@@ -37,7 +37,7 @@ namespace MultiView
             if (Camera.main != null)
             {
                 GameObject gameObj = Object.Instantiate(Camera.main.gameObject);
-                gameObj.name = "MultiCamera.cfg";
+                gameObj.name = "MultiView.cfg";
                 gameObj.tag = "Untagged";
                 while (gameObj.transform.childCount > 0) Object.DestroyImmediate(gameObj.transform.GetChild(0).gameObject);
                 Object.DestroyImmediate(gameObj.GetComponent("CameraRenderCallbacksManager"));
